@@ -7,55 +7,39 @@ defmodule LiveDaisyuiComponents.Alert do
 
   """
 
-  use Phoenix.Component
+  use LiveDaisyuiComponents.Component
 
   attr :color, :string, values: ~w(info success warning error)
   attr :icon, :boolean, default: true
   attr :label, :string, default: nil
-  attr :rest, :global, default: %{class: "alert"}
+  attr :rest, :global
   slot :inner_block
 
   def alert(assigns) do
     assigns =
-      assigns
-      |> assign_class()
+      join_classes_with_rest(assigns, [
+        "alert",
+        add_class_from_color(assigns[:color], "alert"),
+        "shadow-lg"
+      ])
       |> assign_new(:color, fn -> nil end)
 
     ~H"""
-    <div {@rest}>
-      <div>
-        <%= if @icon do %>
-          <%= get_icon(@color) %>
-        <% end %>
-        <%= if @label do %>
-          <span><%= @label %></span>
-        <% else %>
-          <%= render_slot(@inner_block) %>
-        <% end %>
+    <%= if render?([@label, @inner_block]) do %>
+      <div {@rest}>
+        <div>
+          <%= if @icon do %>
+            <%= get_icon(@color) %>
+          <% end %>
+          <%= if @label do %>
+            <span><%= @label %></span>
+          <% else %>
+            <%= render_slot(@inner_block) %>
+          <% end %>
+        </div>
       </div>
-    </div>
+    <% end %>
     """
-  end
-
-  defp assign_class(%{rest: rest} = assigns) do
-    color_class = add_color_to_class(assigns[:color])
-    rest = %{rest | class: join_classes(rest[:class], color_class)}
-
-    %{assigns | rest: rest}
-  end
-
-  defp add_color_to_class(color) do
-    case color do
-      "info" -> "alert-info shadow-lg"
-      "success" -> "alert-success shadow-lg"
-      "warning" -> "alert-warning shadow-lg"
-      "error" -> "alert-error shadow-lg"
-      nil -> "shadow-lg"
-    end
-  end
-
-  defp join_classes(base_class, join_class) do
-    base_class <> " " <> join_class
   end
 
   defp get_icon("info") do
