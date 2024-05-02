@@ -1,6 +1,6 @@
 # LiveDaisyuiComponents
 
-Project currently deprecated in favour of the new [DaisyUIComponents](https://github.com/phcurado/daisyui_components)
+Project currently deprecated in favour of the new [DaisyUIComponents](https://github.com/phcurado/daisy_ui_components)
 
 DaisyUI + Liveview
 
